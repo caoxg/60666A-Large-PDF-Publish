@@ -6,7 +6,7 @@
 
 1. **Google Drive 预览限制**：当 PDF 文件大于 100MB 时，Google Drive 无法提供在线预览，访客必须下载整个文件才能查看，严重影响了评委和普通访客的阅读体验。
 2. **大尺寸文件加载慢**：数百页的高清工程笔记动辄几百MB，如果直接放在普通服务器上，或者哪怕是放到对象存储，不经过处理依然会导致加载极慢、浏览器崩溃。
-3. **国内外网络环境差异**：使用普通的海外 CDN（如 Cloudflare 本身）在全球范围内速度很快，但在中国大陆往往存在访问缓慢或被墙的风险，影响国内团队内部和粉丝交流。
+3. **国内外网络环境差异**：使用普通的海外 CDN（如 Cloudflare 本身）在全球范围内速度很快，但在中国大陆往往存在访问缓慢或被墙的风险，影响国内团队内部交流。
 4. **不同设备/浏览器的 PDF 渲染差异极大**：
    - 移动端（iPad、iPhone、Android）原生的 PDF 渲染器对大文件的支持和体验反而好于网页内嵌版。
    - 桌面端 Chrome/Edge 的 Blink 内核与 `pdf.js` 配合时，可能在某些渲染层面上出现瑕疵（如图片之间有细微横线）。
@@ -84,7 +84,7 @@ async function handleRequest(request) {
 ```
 
 **(2) 客户端验证层：基于 `ping.txt` 的真实客户端竞速兜底**
-由于访客可能使用各种代理，或者 IP 数据库存在误差，我们在入口页 `index.html` 加入了最后一道真实环境网络探针验证：
+由于访客可能使用各种代理，或者Cloudflare IP 数据库存在误差，我们在入口页 `index.html` 加入了最后一道真实环境网络探针验证：
 在判断 Viewer 和设备环境之前，页面首先会利用 `Promise.allSettled` 并发请求 Cloudflare 边缘节点和亚太优化节点上的一个微小文件 `ping.txt`：
 ```javascript
 var t0 = performance.now();
@@ -180,10 +180,10 @@ if (cnTime < cfTime) {
 
 - `vex-viewer-site-cloudflare-pages/`: 包含部署到 Cloudflare Pages 的所有前端静态资源素材。包含了不同引擎的 HTML Viewer 壳、`ping.txt` 用于前端测速，以及负责防内循环的 `404.html`。
   - `config.sample.js`: 环境配置文件样例，需要复制为 `config.js` 并填写真实 R2 路径与国内优化加速域名。
-  - `test.html`: 各款引擎渲染效果测试汇总页面，方便不同设备调试进入各种 Viewer（如 Google Viewer 等）。
+  - `test.html`: **各款引擎渲染效果测试汇总页面，方便不同设备调试进入各种 Viewer（如 Google Viewer 等）。**
 - `worker-routing-sample.js`: 双重智路由中的服务端前置 Worker 脚本，采用了抽象了隐私数据的环境变量化 ES Module 结构。部署时需在 CF Panel 中填入变量。
 - `vex-viewer-site-cnvps/`: 同步部署在亚太优化节点静态 Web 服务器（如 Nginx/Caddy）上的前端备用目录，内部结构与主站类似。
-- `web/` / `build/`: 预编译包含的官方最新 `pdf.js` 与其配套的资源文件（兼容现代大文件分块懒读取）。
+- `web/` / `build/`: 预编译包含的官方最新 `pdf.js` 与其配套的资源文件（兼容现代大文件分块懒读取）。做了一些小fix（修改validateFileURL以解决cors问题）。
 
 > **注意事项**：当修改 Cloudflare Pages 的行为时，使用单页应用(SPA)模式默认会把任何未匹配的路径转发给 `index.html`。为了防止 404 伪装成 200 返回并在部分逻辑下引发无限循环，我们专门在仓库中提供了一个 `404.html` 文件来改变该默认行为。
 
