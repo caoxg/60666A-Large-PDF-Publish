@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>60666A 工程笔记 - Google Viewer 托管模式</title>
+    <style>
+        /* 极致简洁的全屏布局 */
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            background-color: #525659;
+        }
+
+        #viewer-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 顶部装饰条（可选） */
+        .status-bar {
+            background: #323639;
+            color: #fff;
+            padding: 8px 20px;
+            font-size: 13px;
+            font-family: sans-serif;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Iframe 容器 */
+        iframe {
+            flex-grow: 1;
+            border: none;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <script src="./config.js"></script>
+</head>
+
+<body>
+    <div id="viewer-container">
+        <div class="status-bar">
+            <span>Team 60666A Engineering Notebook (2025-2026)</span>
+            <span>渲染引擎：Google Docs Viewer</span>
+        </div>
+
+        <script>
+            // 1. 从 config.js 获取 PDF 地址 (注意 Google Viewer 需要绝对路径)
+            const pdfPath = window.APP_CONFIG.PDF_URL;
+            // 判断是否是相对路径，转换为绝对路径
+            const isAbsolute = /^https?:\/\//i.test(pdfPath);
+            const originalPdfUrl = isAbsolute ? pdfPath : window.location.protocol + "//" + window.location.host + pdfPath;
+
+
+            // 2. 构造 Google Viewer 的嵌入链接
+            // embedded=true 表示嵌入模式，不显示 Google 的顶部导航栏
+            const googleViewerUrl =
+                "https://docs.google.com/viewer?url=" +
+                encodeURIComponent(originalPdfUrl) +
+                "&embedded=true";
+
+            // 3. 动态创建 iframe
+            document.write(
+                '<iframe src="' +
+                googleViewerUrl +
+                '" allowfullscreen></iframe>',
+            );
+        </script>
+    </div>
+</body>
+
+</html>

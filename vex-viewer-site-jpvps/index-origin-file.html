@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>60666A VEX Engineering Notebook</title>
+    <script src="./config.js"></script>
+    <script>
+        // 使用配置的源文件（或者根据需要移除后缀）
+        const r2Url = window.APP_CONFIG.PDF_URL.replace('-compressed-linearized_v2', '');
+        window.location.href =
+            "./web/viewer.html?file=" + encodeURIComponent(r2Url);
+    </script>
+</head>
+
+<body>
+    <p>Loading Engineering Notebook...</p>
+</body>
+
+</html>

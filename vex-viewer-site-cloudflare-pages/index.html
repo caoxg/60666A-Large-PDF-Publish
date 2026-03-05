@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>60666A VEX Engineering Notebook</title>
+    <script src="./config.js"></script>
+    <script>
+        (async function () {
+            var ua = navigator.userAgent;
+            var touches = navigator.maxTouchPoints || 0;
+            var platform = navigator.platform || '';
+
+            var CN_HOST = window.APP_CONFIG.CN_HOST;
+            var PDF_URL = window.APP_CONFIG.PDF_URL;
+
+            var pdfjs = './web/viewer.html?file=' + encodeURIComponent(PDF_URL) + '#pagemode=thumbs';
+            var pdfjsMobile = './web/viewer.html?file=' + encodeURIComponent(PDF_URL); // iPhone：不开侧边栏
+            var pdfobj = './pdfobject.html';
+
+            // ── 第一步：速度测试，CN-optimized 更快则直接跳过去（让它处理 viewer 选择）──
+            var t0 = performance.now();
+            var cnTime = Infinity, cfTime = Infinity;
+
+            await Promise.allSettled([
+                fetch(CN_HOST + '/ping.txt?_=' + t0, { cache: 'no-store', mode: 'no-cors' })
+                    .then(function () { cnTime = performance.now() - t0; }),
+                fetch('/ping.txt?_=' + t0, { cache: 'no-store' })
+                    .then(function () { cfTime = performance.now() - t0; })
+            ]);
+
+            if (cnTime < cfTime) {
+                window.location.replace(CN_HOST + '/');
+                return;
+            }
+
+            // ── 第二步：CF 节点更快，在 CF 上按平台/浏览器智能分发 viewer ──
+            var isIpad = /iPad/.test(ua) || (platform === 'MacIntel' && touches > 1);
+            var isIphone = !isIpad && /iPhone|iPod/.test(ua);
+            var isAndroid = /Android/.test(ua);
+            var isMac = /Macintosh/.test(ua) && !isIpad && touches < 2;
+            var isWindows = /Windows/.test(ua);
+
+            // iOS Chrome 用 CriOS，桌面 Chrome 排除 Edge/Opera
+            var isEdge = /Edg\//.test(ua);
+            var isChrome = /CriOS/.test(ua) || (/Chrome/.test(ua) && !isEdge && !/OPR\//.test(ua));
+
+            var dest;
+
+            if (isIpad) {
+                dest = PDF_URL;                          // iPad → 裸 PDF
+            } else if (isIphone) {
+                dest = isChrome ? pdfjsMobile : PDF_URL; // iPhone Chrome → pdf.js；Safari → 裸 PDF
+            } else if (isAndroid) {
+                dest = PDF_URL + '#view=FitH';           // Android → 裸 PDF + FitH
+            } else if ((isMac || isWindows) && (isChrome || isEdge)) {
+                dest = pdfobj;                           // Mac/Windows Chrome/Edge → PDFObject
+            } else {
+                dest = pdfjs;                            // Mac Safari / 其他 → pdf.js + 缩略图
+            }
+
+            window.location.replace(dest);
+        })();
+    </script>
+</head>
+
+<body>
+    <p>Loading Engineering Notebook...</p>
+</body>
+
+</html>

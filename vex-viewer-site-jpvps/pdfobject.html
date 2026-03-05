@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>60666A 工程笔记 - VEX 2025-2026</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.12/pdfobject.min.js"></script>
+    <style>
+        /* 让 PDF 铺满全屏 */
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        #pdf-viewer {
+            width: 100%;
+            height: 100vh;
+        }
+
+        /* 备用方案：如果浏览器不支持嵌入，显示下载按钮 */
+        .pdfobject-container {
+            height: 100vh;
+            border: none;
+        }
+
+        .fallback-message {
+            color: white;
+            text-align: center;
+            padding-top: 50px;
+            font-family: sans-serif;
+        }
+
+        .fallback-message a {
+            color: #00bcff;
+            text-decoration: none;
+            border: 1px solid #00bcff;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="pdf-viewer"></div>
+
+    <script src="./config.js"></script>
+    <script>
+        // 1. 从 config.js 获取 PDF 地址
+        const pdfUrl = window.APP_CONFIG.PDF_URL;
+
+        // 2. 配置参数：开启工具栏、页码跳转等
+        const options = {
+            pdfOpenParams: {
+                navpanes: 1, // 显示左侧导航面板
+                toolbar: 1, // 显示顶部工具栏
+                statusbar: 1, // 显示状态栏
+                view: "FitH", // 默认水平适应屏幕
+                pagemode: "thumbs", // 默认显示缩略图，在部分现代浏览器有效
+            },
+            fallbackLink:
+                '<div class="fallback-message"><h2>抱歉，您的浏览器不支持在线预览</h2><p>请点击下方按钮直接下载查看：</p><br><a href="[url]">下载工程笔记 (PDF)</a></div>',
+        };
+
+        // 3. 执行嵌入
+        PDFObject.embed(pdfUrl, "#pdf-viewer", options);
+    </script>
+</body>
+
+</html>

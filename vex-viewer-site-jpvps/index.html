@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>60666A VEX Engineering Notebook</title>
+    <script src="./config.js"></script>
+    <script>
+        (function () {
+            var ua = navigator.userAgent;
+            var touches = navigator.maxTouchPoints || 0;
+            var platform = navigator.platform || '';
+            var pdf = window.APP_CONFIG.PDF_URL;
+            var pdfjs = './web/viewer.html?file=' + encodeURIComponent(pdf) + '#pagemode=thumbs';
+            var pdfjsMobile = './web/viewer.html?file=' + encodeURIComponent(pdf); // iPhone：不开侧边栏
+            var pdfobj = './pdfobject.html';
+
+            // 平台检测
+            var isIpad = /iPad/.test(ua) || (platform === 'MacIntel' && touches > 1);
+            var isIphone = !isIpad && /iPhone|iPod/.test(ua);
+            var isAndroid = /Android/.test(ua);
+            var isMac = /Macintosh/.test(ua) && !isIpad && touches < 2;
+            var isWindows = /Windows/.test(ua);
+
+            // 浏览器检测（iOS Chrome 用 CriOS，非标准 Chrome）
+            var isEdge = /Edg\//.test(ua);
+            var isChrome = /CriOS/.test(ua) || (/Chrome/.test(ua) && !isEdge && !/OPR\//.test(ua));
+            var isSafari = /Safari/.test(ua) && !isChrome;
+
+            var dest;
+
+            if (isIpad) {
+                // iPad Safari / Chrome → 裸 PDF（系统内置 PDF 渲染，快且稳）
+                dest = pdf;
+            } else if (isIphone) {
+                if (isChrome) {
+                    // iPhone Chrome → pdf.js（避免裸 PDF 触发下载弹窗，不开侧边栏）
+                    dest = pdfjsMobile;
+                } else {
+                    // iPhone Safari → 裸 PDF
+                    dest = pdf;
+                }
+            } else if (isAndroid) {
+                // Android Chrome → 裸 PDF + #view=FitH（触发内置 Viewer）
+                dest = pdf + '#view=FitH';
+            } else if ((isMac || isWindows) && (isChrome || isEdge)) {
+                // Mac/Windows Chrome/Edge → PDFObject（避免 pdf.js 横线问题）
+                dest = pdfobj;
+            } else {
+                // Mac Safari / 其他 → pdf.js（兼容性最佳）
+                dest = pdfjs;
+            }
+
+            window.location.replace(dest);
+        })();
+    </script>
+</head>
+
+<body>
+    <p>Loading Engineering Notebook...</p>
+</body>
+
+</html>

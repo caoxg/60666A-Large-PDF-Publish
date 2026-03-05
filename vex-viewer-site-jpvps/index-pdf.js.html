@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>60666A VEX Engineering Notebook</title>
+    <script src="./config.js"></script>
+    <script>
+        // 使用 config.js 中的配置
+        const r2Url = window.APP_CONFIG.PDF_URL;
+        window.location.href =
+            "./web/viewer.html?file=" + encodeURIComponent(r2Url);
+    </script>
+</head>
+
+<body>
+    <p>Loading Engineering Notebook...</p>
+</body>
+
+</html>

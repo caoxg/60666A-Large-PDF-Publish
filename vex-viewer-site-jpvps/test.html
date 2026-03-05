@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>60666A - Viewer 测试页</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        h1 {
+            font-size: 1.2em;
+            color: #333;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 12px 0;
+        }
+
+        a {
+            display: block;
+            padding: 12px 18px;
+            background: #1a73e8;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.95em;
+        }
+
+        a:hover {
+            background: #1558b0;
+        }
+
+        .note {
+            font-size: 0.8em;
+            color: #888;
+            margin-top: 4px;
+            padding-left: 4px;
+        }
+    </style>
+    <script src="./config.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const pdf = window.APP_CONFIG.PDF_URL;
+            document.getElementById('link-pdfjs').href = "./web/viewer.html?file=" + encodeURIComponent(pdf);
+            document.getElementById('link-direct').href = pdf;
+            document.getElementById('link-fith').href = pdf + "#view=FitH";
+        });
+    </script>
+</head>
+
+<body>
+    <h1>60666A 笔记 - Viewer 测试</h1>
+    <ul>
+        <li>
+            <a id="link-pdfjs" href="#">
+                📄 PDF.js Viewer
+            </a>
+            <div class="note">内嵌 PDF.js，支持目录/搜索</div>
+        </li>
+        <li>
+            <a href="./pdfobject.html">
+                📄 PDFObject Viewer
+            </a>
+            <div class="note">调用浏览器原生插件嵌入</div>
+        </li>
+        <li>
+            <a href="./viewer.js.html">
+                📄 viewer.js (iframe)
+            </a>
+            <div class="note">iframe 直接嵌入 PDF</div>
+        </li>
+        <li>
+            <a href="./googleviewer.html">
+                📄 Google Docs Viewer
+            </a>
+            <div class="note">借助 Google 的云端渲染引擎</div>
+        </li>
+        <li>
+            <a id="link-direct" href="#">
+                📥 裸 PDF（直链）
+            </a>
+            <div class="note">Android Chrome 通常直接下载</div>
+        </li>
+        <li>
+            <a id="link-fith" href="#">
+                📖 裸 PDF（#view=FitH）
+            </a>
+            <div class="note">Android Chrome 可能触发内置 Viewer</div>
+        </li>
+    </ul>
+</body>
+
+</html>
