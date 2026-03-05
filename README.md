@@ -182,7 +182,7 @@ if (cnTime < cfTime) {
   - `config.sample.js`: 环境配置文件样例，需要复制为 `config.js` 并填写真实 R2 路径与国内优化加速域名。
   - `test.html`: 各款引擎渲染效果测试汇总页面，方便不同设备调试进入各种 Viewer（如 Google Viewer 等）。
 - `worker-routing-sample.js`: 双重智路由中的服务端前置 Worker 脚本，采用了抽象了隐私数据的环境变量化 ES Module 结构。部署时需在 CF Panel 中填入变量。
-- `vex-viewer-site-jpvps/`: 同步部署在亚太优化节点静态 Web 服务器（如 Nginx/Caddy）上的前端备用目录，内部结构与主站类似。
+- `vex-viewer-site-cnvps/`: 同步部署在亚太优化节点静态 Web 服务器（如 Nginx/Caddy）上的前端备用目录，内部结构与主站类似。
 - `web/` / `build/`: 预编译包含的官方最新 `pdf.js` 与其配套的资源文件（兼容现代大文件分块懒读取）。
 
 > **注意事项**：当修改 Cloudflare Pages 的行为时，使用单页应用(SPA)模式默认会把任何未匹配的路径转发给 `index.html`。为了防止 404 伪装成 200 返回并在部分逻辑下引发无限循环，我们专门在仓库中提供了一个 `404.html` 文件来改变该默认行为。
